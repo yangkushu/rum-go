@@ -1,4 +1,4 @@
-package database
+package postgres
 
 import (
 	"fmt"
@@ -21,7 +21,7 @@ func (TestOnConflictTable) TableName() string {
 
 func TestPostgresOnConflict(t *testing.T) {
 	pg, err := NewPostgres(
-		&PostgresConfig{
+		&Config{
 			Host:     "localhost",
 			Port:     "5432",
 			User:     "postgres",

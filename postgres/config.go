@@ -1,10 +1,10 @@
-package database
+package postgres
 
 import (
 	"fmt"
 )
 
-type PostgresConfig struct {
+type Config struct {
 	Host            string `mapstructure:"host" yaml:"host"`                           // 数据库服务器地址
 	Port            string `mapstructure:"port" yaml:"port"`                           // 数据库服务器端口
 	User            string `mapstructure:"user" yaml:"user"`                           // 数据库用户
@@ -21,7 +21,7 @@ type PostgresConfig struct {
 	DryRun          bool   `mapstructure:"dry_run" yaml:"dry_run"`                     // // DryRun generate sql without execute
 }
 
-func (c *PostgresConfig) ToDSN() (string, error) {
+func (c *Config) ToDSN() (string, error) {
 
 	str := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s",
 		c.Host, c.Port, c.User, c.Password, c.DBName)
