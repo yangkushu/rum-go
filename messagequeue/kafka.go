@@ -11,6 +11,7 @@ import (
 	"fmt"
 	kafka "github.com/segmentio/kafka-go"
 	kafkasasl "github.com/segmentio/kafka-go/sasl/plain"
+	"github.com/yangkushu/rum-go/iface"
 	"github.com/yangkushu/rum-go/log"
 	"io"
 	"os"
@@ -32,7 +33,7 @@ type Kafka struct {
 	dialer     *kafka.Dialer
 	config     *KafkaConfig
 	readerLock sync.Mutex
-	logger     log.ILogger
+	log        iface.ILogger
 }
 
 // NewKafka creates a new Kafka client.
@@ -113,7 +114,7 @@ func NewKafka(config *KafkaConfig) (IMessageQueue, error) {
 		//writer: writer,
 		dialer: dialer,
 		config: config,
-		logger: config.Logger,
+		log:    config.Logger,
 	}
 
 	if err := k.checkConnection(); err != nil {
@@ -181,7 +182,7 @@ func (k *Kafka) Publish(topic Topic, message interface{}) error {
 	}
 
 	if value == nil {
-		log.Error("message is nil", log.String("topic", string(topic)))
+		k.log.Error("message is nil", log.String("topic", string(topic)))
 		return errors.New("message is nil")
 	}
 
@@ -232,10 +233,10 @@ func (k *Kafka) Subscribe(topic Topic, groupId string, handler IMessageSubscribe
 			msg, err := reader.FetchMessage(context.Background())
 			if err != nil {
 				if k.config.IsDebug {
-					log.Debug("Error while reading Kafka message", log.String("error", err.Error()))
+					k.log.Debug("Error while reading Kafka message", log.String("error", err.Error()))
 				}
 				if err == io.EOF {
-					log.Error("EOF while reading Kafka message", log.String("topic", string(topic)))
+					k.log.Error("EOF while reading Kafka message", log.String("topic", string(topic)))
 					return
 				}
 				handler.HandleError(nil, fmt.Errorf("error while reading Kafka message:%w", err))
@@ -245,7 +246,7 @@ func (k *Kafka) Subscribe(topic Topic, groupId string, handler IMessageSubscribe
 			// Send message to callback channel
 			message := &KafKaMessage{originalMsg: msg}
 			if k.config.IsDebug {
-				log.Debug("Received message from Kafka", log.String("topic", msg.Topic), log.Any("message", message), log.Any("msg", msg), log.String("data", string(message.GetMessageData())))
+				k.log.Debug("Received message from Kafka", log.String("topic", msg.Topic), log.Any("message", message), log.Any("msg", msg), log.String("data", string(message.GetMessageData())))
 			}
 			if !handler.HandleMessage(message) {
 				// 返回false不提交消息
@@ -256,7 +257,7 @@ func (k *Kafka) Subscribe(topic Topic, groupId string, handler IMessageSubscribe
 			if err := reader.CommitMessages(context.Background(), msg); err != nil {
 				handler.HandleError(message, fmt.Errorf("failed to commit message:%w", err))
 				if k.config.IsDebug {
-					log.Debug("Failed to commit message", log.String("error", err.Error()))
+					k.log.Debug("Failed to commit message", log.String("error", err.Error()))
 				}
 				continue
 			}

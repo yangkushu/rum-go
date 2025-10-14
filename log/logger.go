@@ -3,6 +3,7 @@ package log
 import (
 	"fmt"
 	"github.com/pkg/errors"
+	"github.com/yangkushu/rum-go/iface"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"gopkg.in/natefinch/lumberjack.v2"
@@ -26,7 +27,7 @@ func iso8601TimeEncoder(t time.Time, enc zapcore.PrimitiveArrayEncoder) {
 NewLogger
 v 0.0.11 更新一下，使用了更底层的 API
 */
-func NewLogger(config *Config) (ILogger, error) {
+func NewLogger(config *Config) (iface.ILogger, error) {
 	// 解析 config.Level 自定义级别
 	var lvl zapcore.Level
 	if config.Level != "" {
@@ -169,22 +170,22 @@ func (l *Logger) Sync() error {
 	return l.zapLogger.Sync()
 }
 
-func (l *Logger) Info(msg string, fields ...Field) {
+func (l *Logger) Info(msg string, fields ...iface.Field) {
 	zapFields := toZapFields(fields)
 	l.zapLogger.Info(msg, zapFields...)
 }
 
-func (l *Logger) Warn(msg string, fields ...Field) {
+func (l *Logger) Warn(msg string, fields ...iface.Field) {
 	zapFields := toZapFields(fields)
 	l.zapLogger.Warn(msg, zapFields...)
 }
 
-func (l *Logger) Error(msg string, fields ...Field) {
+func (l *Logger) Error(msg string, fields ...iface.Field) {
 	zapFields := toZapFields(fields)
 	l.zapLogger.Error(msg, zapFields...)
 }
 
-func (l *Logger) Debug(msg string, fields ...Field) {
+func (l *Logger) Debug(msg string, fields ...iface.Field) {
 	zapFields := toZapFields(fields)
 	l.zapLogger.Debug(msg, zapFields...)
 }

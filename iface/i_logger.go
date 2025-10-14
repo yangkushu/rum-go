@@ -1,4 +1,4 @@
-package log
+package iface
 
 type ILogger interface {
 	Sync() error
@@ -8,3 +8,5 @@ type ILogger interface {
 	Debug(msg string, fields ...Field)
 	GetLevel() string
 }
+
+type Field interface{}

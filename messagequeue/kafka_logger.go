@@ -2,14 +2,14 @@ package messagequeue
 
 import (
 	"fmt"
-	"github.com/yangkushu/rum-go/log"
+	"github.com/yangkushu/rum-go/iface"
 )
 
 type KafkaLogger struct {
-	logger log.ILogger
+	logger iface.ILogger
 }
 
-func NewKafkaLogger(logger log.ILogger) *KafkaLogger {
+func NewKafkaLogger(logger iface.ILogger) *KafkaLogger {
 	return &KafkaLogger{logger: logger}
 }
 
@@ -28,10 +28,10 @@ func (l *KafkaLogger) Printf(format string, v ...interface{}) {
 }
 
 type KafkaErrorLogger struct {
-	logger log.ILogger
+	logger iface.ILogger
 }
 
-func NewKafkaErrorLogger(logger log.ILogger) *KafkaErrorLogger {
+func NewKafkaErrorLogger(logger iface.ILogger) *KafkaErrorLogger {
 	return &KafkaErrorLogger{logger: logger}
 }
 

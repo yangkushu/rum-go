@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
+	"github.com/yangkushu/rum-go/iface"
 	"github.com/yangkushu/rum-go/log"
 	"net/http"
 	"strings"
@@ -11,7 +12,7 @@ import (
 type Cors struct {
 	AllowedOrigins []string
 	enableLog      bool
-	logger         log.ILogger
+	logger         iface.ILogger
 }
 
 // OptionCors 定义配置函数类型
@@ -26,7 +27,7 @@ func NewCorsAllowAll() *Cors {
 	return &Cors{AllowedOrigins: []string{}}
 }
 
-func NewCorsWithLogger(allowedOrigins []string, logger log.ILogger) *Cors {
+func NewCorsWithLogger(allowedOrigins []string, logger iface.ILogger) *Cors {
 	return &Cors{AllowedOrigins: allowedOrigins, enableLog: true, logger: logger}
 }
 

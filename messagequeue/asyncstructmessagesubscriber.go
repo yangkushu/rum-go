@@ -2,6 +2,7 @@ package messagequeue
 
 import (
 	"encoding/json"
+	"github.com/yangkushu/rum-go/iface"
 	"github.com/yangkushu/rum-go/log"
 	"reflect"
 	"sync"
@@ -14,6 +15,7 @@ type AsyncStructMessageSubscriber[M any] struct {
 	onMessage      func(M)
 	onceStart      sync.Once
 	goroutineNum   int
+	log            iface.ILogger
 }
 
 // NewAsyncStructMessageSubscriber 创建新的AsyncStructMessageSubscriber的函数
@@ -78,5 +80,5 @@ func (a *AsyncStructMessageSubscriber[M]) stop() {
 
 // HandleError 是处理错误的函数
 func (a *AsyncStructMessageSubscriber[M]) HandleError(message IMessage, err error) {
-	log.Error("StructMessageSubscriber error", log.String("error", err.Error()))
+	a.log.Error("StructMessageSubscriber error", log.String("error", err.Error()))
 }

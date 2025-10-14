@@ -2,6 +2,7 @@ package messagequeue
 
 import (
 	"encoding/json"
+	"github.com/yangkushu/rum-go/iface"
 	"github.com/yangkushu/rum-go/log"
 	"reflect"
 )
@@ -9,12 +10,14 @@ import (
 // StructMessageSubscriber 同步结构体订阅者。使用泛型，处理指定结构体或者字符串数据
 type StructMessageSubscriber[M any] struct {
 	onMessage func(M) bool
+	log       iface.ILogger
 }
 
 // NewStructMessageSubscriber 创建新的StructMessageSubscriber的函数
-func NewStructMessageSubscriber[M any](onMessage func(M) bool) *StructMessageSubscriber[M] {
+func NewStructMessageSubscriber[M any](onMessage func(M) bool, log iface.ILogger) *StructMessageSubscriber[M] {
 	return &StructMessageSubscriber[M]{
 		onMessage: onMessage,
+		log:       log,
 	}
 }
 
@@ -32,7 +35,7 @@ func (a *StructMessageSubscriber[M]) HandleMessage(message IMessage) bool {
 		var msg M
 		err := json.Unmarshal(message.GetMessageData(), &msg)
 		if err != nil {
-			log.Error("StructMessageSubscriber HandleMessage error", log.String("error", err.Error()))
+			a.log.Error("StructMessageSubscriber HandleMessage error", log.String("error", err.Error()))
 			return false
 		}
 		return a.onMessage(msg)
@@ -41,5 +44,5 @@ func (a *StructMessageSubscriber[M]) HandleMessage(message IMessage) bool {
 
 // HandleError 处理错误的函数
 func (a *StructMessageSubscriber[M]) HandleError(message IMessage, err error) {
-	log.Error("StructMessageSubscriber error", log.String("error", err.Error()))
+	a.log.Error("StructMessageSubscriber error", log.String("error", err.Error()))
 }

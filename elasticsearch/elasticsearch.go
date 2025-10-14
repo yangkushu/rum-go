@@ -9,7 +9,6 @@ import (
 	"github.com/elastic/elastic-transport-go/v8/elastictransport"
 	"github.com/elastic/go-elasticsearch/v8"
 	"github.com/elastic/go-elasticsearch/v8/esapi"
-	"github.com/yangkushu/rum-go/log"
 	"os"
 	"strings"
 )
@@ -107,8 +106,6 @@ func (c *Client) BulkStructs(index string, docs []interface{}) error {
 		Index: index,
 		Body:  strings.NewReader(buf.String()),
 	}
-
-	log.Debug("BulkRequest", log.String("response", buf.String()))
 
 	// 执行批量插入
 	res, err := req.Do(context.Background(), c.TypedClient)

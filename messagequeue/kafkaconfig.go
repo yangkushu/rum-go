@@ -1,7 +1,7 @@
 package messagequeue
 
 import (
-	"github.com/yangkushu/rum-go/log"
+	"github.com/yangkushu/rum-go/iface"
 )
 
 type KafkaConfig struct {
@@ -12,5 +12,5 @@ type KafkaConfig struct {
 	Mechanisms string `mapstructure:"mechanisms" yaml:"mechanisms"`
 	Protocol   string `mapstructure:"protocol" yaml:"protocol"`
 	IsDebug    bool   `mapstructure:"is_debug" yaml:"is_debug"`
-	Logger     log.ILogger
+	Logger     iface.ILogger
 }

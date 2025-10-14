@@ -2,19 +2,12 @@ package messagequeue
 
 import (
 	"fmt"
-	"github.com/yangkushu/rum-go/log"
 	"os"
 	"testing"
 	"time"
 )
 
 func TestKafkaPlainText(t *testing.T) {
-
-	logger, err := log.NewLogger(log.NewDefaultConfig())
-	if err != nil {
-		panic(err)
-	}
-	log.SetLogger(logger)
 
 	c := &KafkaConfig{
 		Brokers:    os.Getenv("broker"),
